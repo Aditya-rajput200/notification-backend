@@ -70,10 +70,10 @@ app.use(express.json());
 app.use('/api/v1/job',scrape_router);
 app.use('/api/v1/user',user_router);
 
-app.get(('/',((req,res)=>{
+app.get('/',(req,res)=>{
 
 res.send("hello")
-}))
+})
 
 
 const PORT = process.env.PORT || 5000;
