@@ -6,7 +6,7 @@ const { VerifyToken } = require('../middleware/jwt');
 
 scrape_router.post('/scrape',VerifyToken, scrapeProduct);
 
-scrape_router.get('/getProduts',VerifyToken,getProducts)
+scrape_router.get('/getProduts',getProducts)
 
 scrape_router.delete('/delete',VerifyToken,deleteProducts)
 module.exports =scrape_router;
