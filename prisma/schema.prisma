@@ -21,17 +21,14 @@ model Product {
   name            String
   price           Float
   image           String?
-  url             String    @unique
-  
-  
+  url             String         @unique
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
+  userId          Int
   discountedPrice Float?
   coupon          Coupon[]
- 
   priceHistory    PriceHistory[]
   user            User           @relation(fields: [userId], references: [id])
-  userId          Int
 }
 
 model PriceHistory {
@@ -45,10 +42,10 @@ model PriceHistory {
 model Coupon {
   id            String  @id @default(cuid())
   name          String
-  description   String?
   productId     String
   discountPrice Float?
-  product       Product @relation(fields: [productId], references: [id] , onDelete: Cascade)
+  description   String?
+  product       Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
 
 model playing_with_neon {

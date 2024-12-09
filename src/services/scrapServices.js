@@ -1,7 +1,10 @@
 const puppeteer = require('puppeteer');
 
 async function scrapeMyntraProduct(url) {
-  const browser = await puppeteer.launch({ headless: true });
+  const browser = await puppeteer.launch({
+    headless: true, // Run in headless mode
+    args: ['--no-sandbox', '--disable-setuid-sandbox'], // Add required flags
+  });
   const page = await browser.newPage();
 
   try {

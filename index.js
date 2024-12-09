@@ -11,54 +11,54 @@ const { generateEmailBody, sendEmail } = require('./src/jobs/sendNotification');
 
 app.use(cors());
 
-// cron.schedule('*/2 * * * * ', async() => {
-
-//     console.log('Running scheduled task to check for price changes');
-//   //  get all added product 
-//   const products = await prisma.product.findMany({
-//     where: {
-//       userId: 1, 
-//     },
-//     include: {
-//       user: {
-//         select: {
-//           email: true,
-//         },
-//       },
-//     },
-//   });
+cron.schedule('*/1 * * * *  ', async() => {
+    
+    console.log('Running scheduled task to check for price changes');
+  //  get all added product 
+  const products = await prisma.product.findMany({
+    where: {
+      userId: 1, 
+    },
+    include: {
+      user: {
+        select: {
+          email: true,
+        },
+      },
+    },
+  });
   
  
-//   for(var i=0;i<products.length;i++){
+  for(var i=0;i<products.length;i++){
 
-//     let previosPrice = products[i].price 
-//     let previosdiscount=products[i].discountedPrice
+    let previosPrice = products[i].price 
+    let previosdiscount=products[i].discountedPrice
    
 
-//     scrapeMyntraProduct( products[i].url).then(async(res)=>{
+    scrapeMyntraProduct( products[i].url).then(async(res)=>{
 
-//       if(res.price !== previosPrice || res.discountPrice !==previosdiscount){
+      if(res.price !== previosPrice || res.discountPrice !==previosdiscount){
 
-//           updatePriceHistoryJob(products[i].id)
+          updatePriceHistoryJob(products[i].id)
 
-//           // sending email
-//            const content = generateEmailBody(products[i],"Price_Drop")
-//             sendEmail(content,products[i].user.email)
+          // sending email
+           const content = generateEmailBody(products[i],"Price_Drop")
+            sendEmail(content,products[i].user.email)
 
       
-//         console.log("Price Changed")
-//         }
-//       else{
-//         console.log("Price doest not change")
+        console.log("Price Changed")
+        }
+      else{
+        console.log("Price doest not change")
        
-//       }
-//     })
-//   }
+      }
+    })
+  }
 
 
   
 
-// })
+})
 
 
 
