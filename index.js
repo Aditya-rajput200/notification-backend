@@ -11,54 +11,74 @@ const { generateEmailBody, sendEmail } = require('./src/jobs/sendNotification');
 
 app.use(cors());
 
-cron.schedule('*/1 * * * *  ', async() => {
-    
+cron.schedule('*/1 * * * *', async () => {
+  try {
     console.log('Running scheduled task to check for price changes');
-  //  get all added product 
-  const products = await prisma.product.findMany({
-    where: {
-      userId: 1, 
-    },
-    include: {
-      user: {
-        select: {
-          email: true,
+
+    // Fetch all added products
+    const products = await prisma.product.findMany({
+      where: {
+        userId: 1,
+      },
+      include: {
+        user: {
+          select: {
+            email: true,
+          },
         },
       },
-    },
-  });
-  
- 
-  for(var i=0;i<products.length;i++){
+    });
 
-    let previosPrice = products[i].price 
-    let previosdiscount=products[i].discountedPrice
-   
+    // Ensure products are retrieved
+    if (!products || products.length === 0) {
+      console.log('No products found for the user.');
+      return;
+    }
 
-    scrapeMyntraProduct( products[i].url).then(async(res)=>{
+    // Loop through products and process them
+    for (const product of products) {
+      const previosPrice = product.price;
+      const previosDiscount = product.discountedPrice;
 
-      if(res.price !== previosPrice || res.discountPrice !==previosdiscount){
+      console.log(`Processing Product ID: ${product.id}`);
+      console.log('Previous Price:', previosPrice);
+      console.log('Previous Discounted Price:', previosDiscount);
 
-          updatePriceHistoryJob(products[i].id)
+      try {
+        // Scrape the product details
+        const scrapedData = await scrapeMyntraProduct(product.url);
 
-          // sending email
-           const content = generateEmailBody(products[i],"Price_Drop")
-            sendEmail(content,products[i].user.email)
-
-      
-        console.log("Price Changed")
+        if (!scrapedData) {
+          console.log(`Scraping failed for Product ID: ${product.id}`);
+          continue;
         }
-      else{
-        console.log("Price doest not change")
-       
+
+        console.log('Scraped Data:', scrapedData);
+
+        // Check for price changes
+        if (scrapedData.price !== previosPrice || scrapedData.discountPrice !== previosDiscount) {
+          console.log(`Price change detected for Product ID: ${product.id}`);
+
+          // Update price history
+          await updatePriceHistoryJob(product.id,scrapedData.price,scrapedData.discountPrice);
+
+          // Send notification
+          const content =  await generateEmailBody(product, 'Price_Drop');
+          await sendEmail(content, product.user.email);
+
+          console.log('Notification sent for Product ID:', product.id);
+        } else {
+          console.log(`No price changes for Product ID: ${product.id}`);
+        }
+      } catch (scrapingError) {
+        console.error(`Error while scraping Product ID: ${product.id}:`, scrapingError.message);
       }
-    })
+    }
+  } catch (error) {
+    console.error('Error in scheduled task:', error.message);
   }
+});
 
-
-  
-
-})
 
 
 
@@ -68,6 +88,9 @@ app.use(express.json());
 
 app.use('/api/v1/job',scrape_router);
 app.use('/api/v1/user',user_router);
+app.send('/',(req, res)=>{
+  
+})
 
 const PORT = process.env.PORT || 5000;
 
@@ -75,4 +98,3 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
-

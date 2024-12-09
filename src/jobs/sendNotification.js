@@ -50,11 +50,19 @@ async function generateEmailBody(product, type) {
       break;
 
     case Notification.Price_Drop:
-      subject = `Lowest Price Alert for ${shortenedTitle}`;
+      subject = `Price Drop Alert for ${shortenedTitle}! 🎉`;
       body = `
         <div>
-          <h4>Hey, ${product.title} has reached its lowest price ever!!</h4>
-          <p>Grab the product <a href="${product.url}" target="_blank" rel="noopener noreferrer">here</a> now.</p>
+          <h2>Great News from PriceTrack 🚀</h2>
+          <p>The price for <strong>${product.name}</strong> has just dropped!</p>
+          <div style="border: 1px solid #ccc; padding: 10px; background-color: #f8f8f8;">
+            <h3>${product.name} is now available at a lower price!</h3>
+            <p>Don't miss this opportunity to grab it at the new price. Click below to check it out:</p>
+            <a href="${product.url}" target="_blank" rel="noopener noreferrer" style="display: inline-block; padding: 10px 20px; background-color: #007bff; color: #fff; text-decoration: none; border-radius: 5px;">Buy Now</a>
+            <p>Here’s the product at a glance:</p>
+            <img src="${product.image}" alt="Product Image" style="max-width: 100%; margin-top: 10px;" />
+          </div>
+          <p>Stay updated with PriceTrack to ensure you never miss a deal on ${product.name} and other items you're tracking!</p>
         </div>
       `;
       break;
