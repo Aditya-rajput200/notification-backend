@@ -88,9 +88,8 @@ app.use(express.json());
 
 app.use('/api/v1/job',scrape_router);
 app.use('/api/v1/user',user_router);
-app.send('/',(req, res)=>{
-  
-})
+
+
 
 const PORT = process.env.PORT || 5000;
 
