@@ -22,7 +22,7 @@ exports.scrapeProduct = async (req, res) => {
 
   try {
     const productData = await scrapeMyntraProduct(url);
-    console.log("aditya", req.user.id);
+
     const newProduct = await prisma.product.create({
       data: {
         name: productData.title,
@@ -121,7 +121,7 @@ exports.getProducts = async (req, res) => {
 
     res.status(200).json({ products: userWithProducts.products });
   } catch (error) {
-    console.error("Error fetching products:", error);
+    
     res.status(500).json({ error: "Something went wrong" });
   }
 };

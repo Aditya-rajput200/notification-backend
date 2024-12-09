@@ -1,10 +1,7 @@
-
-
 const nodemailer = require('nodemailer');
 require('dotenv').config();
-
 const e_password = process.env.EMAIL_APP_PASSWORD
-console.log("emailpassword",e_password)
+
 const Notification = {
   WELCOME: 'WELCOME',
   CHANGE_OF_STOCK: 'CHANGE_OF_STOCK',
@@ -13,7 +10,7 @@ const Notification = {
 };
 
 async function generateEmailBody(product, type) {
-    console.log("Product received:", product)
+
   // Shorten the product title
   const shortenedTitle =
     product.name.length > 20
@@ -32,9 +29,9 @@ async function generateEmailBody(product, type) {
           <p>You are now tracking ${product.name}.</p>
           <p>Here's an example of how you'll receive updates:</p>
           <div style="border: 1px solid #ccc; padding: 10px; background-color: #f8f8f8;">
-            <h3>${product.name} is back in stock!</h3>
-            <p>We're excited to let you know that ${product.name} is now back in stock.</p>
-            <p>Don't miss out - <a href="${product.url}" target="_blank" rel="noopener noreferrer">buy it now</a>!</p>
+            <h3>${product.name} is now started tracking</h3>
+            <p>We're excited to let you know that ${product.name} , we are now tracking this .</p>
+            <p>We will Let You know when Price drops <a href="${product.url}" target="_blank" rel="noopener noreferrer">buy it now</a>!</p>
             <img src=${product.image} alt="Product Image" style="max-width: 100%;" />
           </div>
           <p>Stay tuned for more updates on ${product.name} and other products you're tracking.</p>

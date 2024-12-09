@@ -11,7 +11,7 @@ const { generateEmailBody, sendEmail } = require('./src/jobs/sendNotification');
 
 app.use(cors());
 
-// cron.schedule('*/1 * * * * ', async() => {
+// cron.schedule('*/2 * * * * ', async() => {
 
 //     console.log('Running scheduled task to check for price changes');
 //   //  get all added product 
